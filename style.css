@@ -9,7 +9,11 @@ background:radial-gradient(circle at 85% 8%,#fff6c9 0,#ffe3b088 12%,transparent 
 @keyframes drift{to{transform:translateX(120vw)}}
 header{text-align:center;padding:44px 16px 12px}
 .logo{height:84px;width:auto;border-radius:22px;padding:6px;background:#fff;box-shadow:0 8px 30px #ff7fb455;image-rendering:auto}
-h1{font-family:Fraunces,serif;font-size:clamp(2.8rem,8vw,5rem);margin:10px 0 4px;background:linear-gradient(90deg,#ff3d8b,#ff7a59,#a24bff);-webkit-background-clip:text;color:transparent}
+.name-row{display:flex;align-items:center;justify-content:center;gap:12px;margin:10px 0 4px}
+h1{font-family:Fraunces,serif;font-size:clamp(2.8rem,8vw,5rem);margin:0;background:linear-gradient(90deg,#ff3d8b,#ff7a59,#a24bff);-webkit-background-clip:text;color:transparent}
+.github{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;flex:0 0 42px;border-radius:50%;background:#fff;color:#c2185b;border:2px solid #ff9ec6;box-shadow:0 6px 16px #ff7fb433;text-decoration:none}
+.github svg{width:22px;height:22px;display:block;fill:currentColor}
+.github:hover,.github:focus-visible{background:linear-gradient(90deg,#ff4f9a,#ff8a5c);color:#fff;border-color:transparent;outline:none}
 .tag{color:#5b3a5f;margin:0 0 24px;font-size:1.05rem}.tag em{color:#e0287a;font-weight:600}
 #filters{display:grid;grid-template-columns:repeat(6,176px);justify-content:center;align-items:center;gap:8px;max-width:1120px;margin:0 auto}
 #filters button{display:grid;grid-template-columns:28px minmax(0,1fr);align-items:center;column-gap:8px;box-sizing:border-box;width:176px;height:48px;margin:0;padding:0 12px;background:#ffffffb8;border:2px solid #ff9ec6;color:#b0185f;border-radius:999px;cursor:pointer;font:600 .78rem Inter;white-space:nowrap;transition:background .2s,box-shadow .2s,border-color .2s}
@@ -43,4 +47,12 @@ main{columns:300px;column-gap:24px;padding:24px clamp(16px,4vw,56px);max-width:1
 .empty p{margin:0 auto;max-width:36rem;line-height:1.5}
 .cap{padding:10px 4px 2px;font-size:.88rem;line-height:1.5}.cap b{font-family:Fraunces,serif;font-size:1.1rem;color:#3a1d3f}.cap span{color:#6b4a6e}
 .desc{display:block;margin-top:6px;color:#8a4d72;font-size:.8rem}
-footer{text-align:center;color:#7a4a6e;padding:32px;font-size:.85rem}
+footer{display:flex;flex-direction:column;align-items:center;text-align:center;color:#7a4a6e;padding:32px 16px;font-size:.85rem;line-height:1.5}
+.github-foot{display:inline-flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;color:#c2185b;font:600 .8rem Inter,sans-serif;text-decoration:none}
+.github-foot svg{width:14px;height:14px;display:block;fill:currentColor}
+.github-foot:hover,.github-foot:focus-visible{color:#ff3d8b}
+@media (max-width:720px){
+  .github{width:36px;height:36px;flex-basis:36px}
+  .github svg{width:18px;height:18px}
+  .name-row{gap:8px}
+}
