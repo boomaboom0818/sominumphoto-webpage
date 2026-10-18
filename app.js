@@ -190,12 +190,6 @@ function render(filter) {
     if (typeof weather.temp_c === "number") bits.push(`${Math.round(weather.temp_c)}°C`);
     line.textContent = bits.join(" · ");
     cap.append(place, document.createElement("br"), line);
-    if (badgeInfo.keywords) {
-      const desc = document.createElement("span");
-      desc.className = "desc";
-      desc.textContent = badgeInfo.keywords;
-      cap.append(desc);
-    }
 
     card.append(pic, cap);
     board.append(card);
