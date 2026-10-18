@@ -66,7 +66,17 @@ meta = orig.with_name(orig.name.replace("_0_orig.jpg", ".json"))
 upload_shot(orig, dream, meta)
 ```
 
-`/api/upload` checks `X-Somnium-Token`, stores `shots/<stem>/orig.jpg`, `dream.jpg`, and a public `meta.json` in Blob, and `/api/photos` lists those shots newest first. Each photo keeps the pipeline field names: `style_id`, `prompt`, `taken_at`, `context` (`location_label`, `day_part`, `weather`, plus sun, astro, and mood fields when present), and `files.orig` / `files.dream` (public image URLs for `<stem>_0_orig.jpg` and `<stem>_1_dream.jpg`). The client IP and coordinates are left out. Presets match `creative/creative.json` on Somnium `main`: `popcomic` COMIC, `watercolor` WATERCOLOR, `anime` ANIME, `surprise` SURPRISE.
+`/api/upload` checks `X-Somnium-Token`, stores `shots/<stem>/orig.jpg`, `dream.jpg`, and a public `meta.json` in Blob, and `/api/photos` lists those shots newest first. Each photo keeps the pipeline field names: `style_id`, `prompt`, `taken_at`, `context` (`location_label`, `day_part`, `weather`, plus sun, astro, and mood fields when present), and `files.orig` / `files.dream` (public image URLs for `<stem>_0_orig.jpg` and `<stem>_1_dream.jpg`). The client IP and coordinates are left out. The response also includes the current `presets` list.
+
+## Presets
+
+Filters, badges, keywords, prompts, and preview images come from `presets.json`, copied from the camera's `creative/creative.json` in mode order. A preview such as `previews/pencil.jpg` is copied beside it. A `style_id` that is not in that file still renders, with the id itself as a generic badge. When the camera adds a mode, refresh the file and redeploy:
+
+```bash
+python3 scripts/sync_presets.py /path/to/Somnium/creative/creative.json
+```
+
+A raw GitHub URL works in place of the local path.
 
 ## Local
 

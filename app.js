@@ -1,15 +1,8 @@
-const STYLES = {
-  popcomic: { label: "COMIC", keywords: "cel-shaded color grade, soft outlines, flat pastel tones" },
-  watercolor: { label: "WATERCOLOR", keywords: "soft watercolor wash, paper tooth, pigment blooms" },
-  anime: { label: "ANIME", keywords: "anime cel shade, expressive eyes, clean linework, soft screen-tone, vibrant palette" },
-  surprise: { label: "SURPRISE", keywords: "unexpected style twist, mood-led grade, playful reinterpretation" },
-};
-
+let presets = [];
+let presetById = {};
+let presetsLoaded = false;
 let photos = [];
-
-function preset(photo) {
-  return STYLES[photo.style_id] || {};
-}
+let current = "all";
 
 function contextOf(photo) {
   return photo.context && typeof photo.context === "object" ? photo.context : {};
@@ -37,7 +30,39 @@ function whenLabel(value) {
   return time.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
 }
 
+function badgeFor(photo) {
+  const preset = presetById[photo.style_id];
+  if (preset) return { label: preset.label, keywords: preset.keywords || photo.keywords || "", generic: false };
+  if (photo.known === false || presetsLoaded) {
+    return { label: photo.style_id || "Dream", keywords: "", generic: true };
+  }
+  return { label: photo.label || photo.style_id || "Dream", keywords: photo.keywords || "", generic: false };
+}
+
+function buildFilters() {
+  const nav = document.getElementById("filters");
+  const all = nav.querySelector('[data-s="all"]');
+  nav.replaceChildren(all);
+  all.classList.toggle("on", current === "all");
+  for (const preset of presets) {
+    const button = document.createElement("button");
+    button.dataset.s = preset.id;
+    if (preset.preview) {
+      const preview = document.createElement("img");
+      preview.className = "filter-preview";
+      preview.src = preset.preview;
+      preview.alt = "";
+      button.append(preview);
+    }
+    button.append(document.createTextNode(preset.label));
+    if (preset.keywords) button.title = preset.keywords;
+    button.classList.toggle("on", current === preset.id);
+    nav.append(button);
+  }
+}
+
 function render(filter) {
+  current = filter;
   const board = document.getElementById("board");
   board.replaceChildren();
   if (!photos.length) {
@@ -46,14 +71,21 @@ function render(filter) {
   }
   const visible = photos.filter((photo) => filter === "all" || photo.style_id === filter);
   if (!visible.length) {
-    board.append(emptyState("Nothing in this style yet", "Try another filter, or wait for the next shot."));
+    const preset = presetById[filter];
+    const empty = emptyState("Nothing in this style yet", "Try another filter, or wait for the next shot.");
+    if (preset && preset.preview) {
+      const preview = document.createElement("img");
+      preview.className = "style-preview";
+      preview.src = preset.preview;
+      preview.alt = `${preset.label} preview`;
+      empty.prepend(preview);
+    }
+    board.append(empty);
     return;
   }
   for (const photo of visible) {
-    const style = preset(photo);
+    const badgeInfo = badgeFor(photo);
     const context = contextOf(photo);
-    const label = photo.label || style.label || photo.style_id || "Dream";
-    const keywords = photo.keywords || style.keywords || "";
     const card = document.createElement("article");
     card.className = "card";
     card.addEventListener("click", () => card.classList.toggle("flip"));
@@ -62,15 +94,15 @@ function render(filter) {
     pic.className = "pic";
     const dream = document.createElement("img");
     dream.src = fileUrl(photo, "dream");
-    dream.alt = `${label} dream`;
+    dream.alt = `${badgeInfo.label} dream`;
     dream.loading = "lazy";
     const orig = document.createElement("img");
     orig.className = "orig";
     orig.src = fileUrl(photo, "orig");
     orig.alt = "Original photo";
     const badge = document.createElement("span");
-    badge.className = "badge";
-    badge.textContent = label;
+    badge.className = badgeInfo.generic ? "badge generic" : "badge";
+    badge.textContent = badgeInfo.label;
     pic.append(dream, orig, badge);
 
     const cap = document.createElement("div");
@@ -86,10 +118,10 @@ function render(filter) {
     if (typeof weather.temp_c === "number") bits.push(`${Math.round(weather.temp_c)}°C`);
     line.textContent = bits.join(" · ");
     cap.append(place, document.createElement("br"), line);
-    if (keywords) {
+    if (badgeInfo.keywords) {
       const desc = document.createElement("span");
       desc.className = "desc";
-      desc.textContent = keywords;
+      desc.textContent = badgeInfo.keywords;
       cap.append(desc);
     }
 
@@ -98,22 +130,32 @@ function render(filter) {
   }
 }
 
-document.querySelectorAll("nav button").forEach((button) => {
-  button.addEventListener("click", () => {
-    document.querySelector("nav .on").classList.remove("on");
-    button.classList.add("on");
-    render(button.dataset.s);
-  });
+document.getElementById("filters").addEventListener("click", (event) => {
+  const button = event.target.closest("button");
+  if (!button || !button.dataset.s) return;
+  document.querySelectorAll("#filters button").forEach((item) => item.classList.remove("on"));
+  button.classList.add("on");
+  render(button.dataset.s);
 });
 
-fetch("/api/photos", { cache: "no-store" })
-  .then((response) => {
+Promise.all([
+  fetch("/presets.json", { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : { presets: [] }))
+    .catch(() => ({ presets: [] })),
+  fetch("/api/photos", { cache: "no-store" }).then((response) => {
     if (!response.ok) throw new Error(String(response.status));
     return response.json();
-  })
-  .then((data) => {
+  }),
+])
+  .then(([presetFile, data]) => {
+    const fromFile = Array.isArray(presetFile.presets) ? presetFile.presets : [];
+    const fromApi = Array.isArray(data.presets) ? data.presets : [];
+    presets = fromFile.length ? fromFile : fromApi;
+    presetById = Object.fromEntries(presets.map((preset) => [preset.id, preset]));
+    presetsLoaded = true;
     photos = (data.photos || []).slice().sort((a, b) => new Date(b.taken_at) - new Date(a.taken_at));
-    render("all");
+    buildFilters();
+    render(current);
   })
   .catch(() => {
     document.getElementById("board").replaceChildren(
