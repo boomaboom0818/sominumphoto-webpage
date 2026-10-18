@@ -1,13 +1,81 @@
-# Somnium Dream Board (static, Vercel-ready)
-Static site: index.html, style.css, app.js, gallery.json (manifest), images/.
-Entries with `"example": true` are placeholder data.
+# Somnium Dream Board
 
-## Add photos
-Somnium server writes `<stem>_0_orig.jpg`, `<stem>_1_dream.jpg`, `<stem>.json` to its `output_dir` (default `outputs`).
-    python3 scripts/sync_from_server.py /path/to/Somnium/server/outputs --drop-examples
-Then commit and redeploy (or `vercel --prod`). Possible later step: have the FastAPI server run this script after each shot.
+Static gallery (framework Other, no build, output directory `.`) plus two Node routes that store camera shots in Vercel Blob. The page loads `/api/photos`. Cards stay upright on the bright pink daytime background. With no shots yet, the board shows an empty state.
+
+## Environment variables
+
+Set these on the **Vercel project** (Production and Preview):
+
+| Name | Purpose |
+| --- | --- |
+| `BLOB_READ_WRITE_TOKEN` | Public Blob store token. Create a Blob store in the Vercel dashboard (or `vercel blob create-store`) and connect it to this project so the token is injected. `/api/upload` and `/api/photos` both need it. |
+| `SOMNIUM_UPLOAD_TOKEN` | Shared secret. The laptop sends it in the `X-Somnium-Token` header. Generate a long random string and use the same value on the laptop. |
+
+Set these on the **laptop** that runs the Somnium FastAPI server (not on Vercel):
+
+| Name | Purpose |
+| --- | --- |
+| `SOMNIUM_UPLOAD_URL` | Full upload URL, for example `https://your-domain.vercel.app/api/upload`. |
+| `SOMNIUM_UPLOAD_TOKEN` | The same secret as on Vercel. |
+
+Copy `.env.example` when filling these in. Do not commit real values.
+
+Vercel Functions accept about **4.5 MB** per request. A shot is the original JPEG, the dream JPEG, and the metadata JSON together, so keep each pair under about 4.2 MB.
+
+## Deploy
+
+Import this repo in Vercel. Framework preset **Other**, build command empty, output directory `.`. `package.json` only supplies `@vercel/blob` for the `/api` routes; there is no site build.
+
+After the env vars above are set, deploy. Opening the site shows the empty state until the camera uploads a shot.
+
+## Connect the camera
+
+The Somnium server (`pipeline.py`) saves each shot in its `output_dir` (default `outputs`, resolved under `server/`):
+
+- `<stem>_0_orig.jpg`
+- `<stem>_1_dream.jpg`
+- `<stem>.json` with `style_id`, `taken_at`, and `context` (place, day or night, weather)
+
+Leave that repo as it is and run the watcher beside it:
+
+```bash
+export SOMNIUM_UPLOAD_URL=https://your-domain.vercel.app/api/upload
+export SOMNIUM_UPLOAD_TOKEN=the-same-secret
+python3 scripts/somnium_uploader.py watch /path/to/Somnium/server/outputs
+```
+
+`--once` uploads shots already in the folder and exits. One trio can also be sent directly:
+
+```bash
+python3 scripts/somnium_uploader.py upload path/STEM_0_orig.jpg path/STEM_1_dream.jpg path/STEM.json
+```
+
+The watcher records what it sent in `outputs/.somnium-uploaded.json` and retries anything that failed. Uploading the same stem again overwrites that shot.
+
+To push at the end of a request instead of polling, call `upload_shot` from your own code (this is optional; the watcher does not need it):
+
+```python
+import sys
+from pathlib import Path
+sys.path.append("/path/to/this-repo/scripts")
+from somnium_uploader import upload_shot
+
+orig = Path(result.meta["orig_path"])
+dream = Path(result.meta["dream_path"])
+meta = orig.with_name(orig.name.replace("_0_orig.jpg", ".json"))
+upload_shot(orig, dream, meta)
+```
+
+`/api/upload` checks `X-Somnium-Token`, stores `shots/<stem>/orig.jpg`, `dream.jpg`, and a public `meta.json` in Blob, and `/api/photos` lists those shots newest first. Each photo keeps the pipeline field names: `style_id`, `prompt`, `taken_at`, `context` (`location_label`, `day_part`, `weather`, plus sun, astro, and mood fields when present), and `files.orig` / `files.dream` (public image URLs for `<stem>_0_orig.jpg` and `<stem>_1_dream.jpg`). The client IP and coordinates are left out. Presets match `creative/creative.json` on Somnium `main`: `popcomic` COMIC, `watercolor` WATERCOLOR, `anime` ANIME, `surprise` SURPRISE.
 
 ## Local
-    python3 -m http.server 8000
-## Deploy
-`vercel` in this folder (Framework: Other, no build command, output dir `.`), or import the Git repo in Vercel and add the custom domain under Project → Domains.
+
+Static files only:
+
+```bash
+python3 -m http.server 8000
+```
+
+`/api/photos` is a Vercel function, so this server shows the "can't reach the photo feed" message. With Blob credentials in `.env.local`, `npx vercel dev` serves the page and both routes.
+
+`scripts/sync_from_server.py` still copies shots into `images/shots/` and `gallery.json` for a manual commit. The live board does not read that file.

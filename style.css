@@ -14,12 +14,14 @@ h1{font-family:Fraunces,serif;font-size:clamp(2.8rem,8vw,5rem);margin:10px 0 4px
 nav button{background:#ffffffb8;border:2px solid #ff9ec6;color:#b0185f;padding:8px 18px;margin:4px;border-radius:999px;cursor:pointer;font:600 .9rem Inter;transition:.2s}
 nav button.on,nav button:hover{background:linear-gradient(90deg,#ff4f9a,#ff8a5c);border-color:transparent;color:#fff;transform:scale(1.06);box-shadow:0 6px 18px #ff4f9a55}
 main{columns:300px;column-gap:24px;padding:24px clamp(16px,4vw,56px);max-width:1400px;margin:auto}
-.card{break-inside:avoid;margin-bottom:24px;background:#ffffffc9;border:1px solid #fff;border-radius:22px;padding:12px;backdrop-filter:blur(10px);box-shadow:0 12px 36px #ff6fa833,0 2px 6px #0000000d;transition:transform .3s,box-shadow .3s}
-.card:nth-child(odd){transform:rotate(-1deg)}.card:nth-child(even){transform:rotate(1deg)}
-.card:hover{transform:translateY(-6px) rotate(0) scale(1.02);box-shadow:0 18px 44px #ff4f9a44}
-.pic{position:relative;border-radius:14px;overflow:hidden}.pic img{display:block;width:100%;transition:opacity .5s}
+.card{break-inside:avoid;margin-bottom:24px;background:#ffffffc9;border:1px solid #fff;border-radius:22px;padding:12px;backdrop-filter:blur(10px);box-shadow:0 12px 36px #ff6fa833,0 2px 6px #0000000d;transition:transform .3s,box-shadow .3s;transform:none;rotate:none}
+.card:hover{transform:translateY(-6px);rotate:none;box-shadow:0 18px 44px #ff4f9a44}
+.pic{position:relative;border-radius:14px;overflow:hidden}.pic img{display:block;width:100%;transition:opacity .5s;transform:none;rotate:none}
 .pic .orig{position:absolute;inset:0;height:100%;object-fit:cover;opacity:0}.card:hover .orig,.card.flip .orig{opacity:1}
 .badge{position:absolute;top:10px;left:10px;padding:4px 11px;border-radius:999px;font:700 .72rem Inter;text-transform:uppercase;letter-spacing:.06em;background:#fff;color:#c2185b;box-shadow:0 2px 8px #0002}
-.ex{left:auto;right:10px;background:#ffe14d;color:#3a1d3f}
+.empty{column-span:all;text-align:center;padding:56px 20px 72px;color:#7a3a62}
+.empty h2{font-family:Fraunces,serif;font-weight:600;font-size:clamp(1.8rem,4vw,2.4rem);margin:0 0 8px;color:#c2185b}
+.empty p{margin:0 auto;max-width:36rem;line-height:1.5}
 .cap{padding:10px 4px 2px;font-size:.88rem;line-height:1.5}.cap b{font-family:Fraunces,serif;font-size:1.1rem;color:#3a1d3f}.cap span{color:#6b4a6e}
+.desc{display:block;margin-top:6px;color:#8a4d72;font-size:.8rem}
 footer{text-align:center;color:#7a4a6e;padding:32px;font-size:.85rem}

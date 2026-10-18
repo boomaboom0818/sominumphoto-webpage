@@ -1,1 +1,12 @@
-{"cleanUrls":true,"headers":[{"source":"/gallery.json","headers":[{"key":"Cache-Control","value":"no-cache"}]}]}
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "",
+  "outputDirectory": ".",
+  "cleanUrls": true,
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+    }
+  ]
+}

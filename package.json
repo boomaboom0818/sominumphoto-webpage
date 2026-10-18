@@ -1,0 +1,9 @@
+{
+  "name": "somnium-dream-board",
+  "private": true,
+  "type": "module",
+  "description": "Somnium dream-photo gallery. Static site plus Vercel Blob upload API.",
+  "dependencies": {
+    "@vercel/blob": "^2.8.2"
+  }
+}
