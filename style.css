@@ -41,6 +41,9 @@ main{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));just
 .pic .orig{position:absolute;inset:0;height:100%;object-fit:cover;opacity:0}
 .card.show-orig .orig,.card.flip .orig{opacity:1}
 .view-hint{position:absolute;right:10px;bottom:10px;z-index:1;padding:3px 8px;border-radius:999px;background:#fff;color:#c2185b;font:600 .68rem Inter,sans-serif;box-shadow:0 2px 8px #0002;pointer-events:none}
+.download{position:absolute;top:10px;right:10px;z-index:2;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;margin:0;padding:0;border:2px solid #ff9ec6;border-radius:50%;background:#fff;color:#c2185b;box-shadow:0 2px 8px #ff7fb433;cursor:pointer;touch-action:manipulation}
+.download svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.download:hover,.download:focus-visible{background:linear-gradient(90deg,#ff4f9a,#ff8a5c);color:#fff;border-color:transparent;outline:none}
 .view-hint .when-orig{display:none}
 .card.show-orig .when-dream,.card.flip .when-dream{display:none}
 .card.show-orig .when-orig,.card.flip .when-orig{display:inline}

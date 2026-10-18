@@ -175,7 +175,7 @@ function render(filter) {
     origHint.className = "when-orig";
     origHint.textContent = "Original";
     hint.append(dreamHint, origHint);
-    pic.append(dream, orig, badge, hint);
+    pic.append(dream, orig, badge, hint, dreamDownloadButton(photo));
 
     const cap = document.createElement("div");
     cap.className = "cap";
@@ -202,6 +202,80 @@ function render(filter) {
   }
 }
 
+function dreamFilename(id) {
+  const safe = String(id || "shot").replace(/[^A-Za-z0-9._-]+/g, "-").replace(/^-+|-+$/g, "") || "shot";
+  return `somnium-${safe}-dream.jpg`;
+}
+
+function prefersFileShare() {
+  const ua = navigator.userAgent || "";
+  const appleMobile = /iPad|iPhone|iPod/.test(ua);
+  const ipadOs = navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+  return appleMobile || ipadOs;
+}
+
+async function saveDreamFile(url, filename) {
+  let blob;
+  try {
+    const response = await fetch(url, { mode: "cors" });
+    if (!response.ok) throw new Error(String(response.status));
+    blob = await response.blob();
+  } catch {
+    window.open(url, "_blank", "noopener");
+    return;
+  }
+  const file = new File([blob], filename, { type: blob.type || "image/jpeg" });
+  if (prefersFileShare() && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: filename });
+      return;
+    } catch (err) {
+      if (err && err.name === "AbortError") return;
+    }
+  }
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = objectUrl;
+  link.download = filename;
+  link.rel = "noopener";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 1500);
+}
+
+function dreamDownloadButton(photo) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "download";
+  button.setAttribute("aria-label", "Download dream image");
+  const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  icon.setAttribute("viewBox", "0 0 24 24");
+  icon.setAttribute("aria-hidden", "true");
+  icon.setAttribute("focusable", "false");
+  for (const d of ["M12 4v10", "M8 10l4 4 4-4", "M5 19h14"]) {
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", d);
+    icon.append(path);
+  }
+  button.append(icon);
+  const stop = (event) => event.stopPropagation();
+  button.addEventListener("pointerdown", stop);
+  button.addEventListener("pointerup", stop);
+  button.addEventListener("pointercancel", stop);
+  button.addEventListener("keydown", stop);
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    if (button.dataset.busy === "true") return;
+    button.dataset.busy = "true";
+    saveDreamFile(fileUrl(photo, "dream"), dreamFilename(photo.id)).finally(() => {
+      delete button.dataset.busy;
+    });
+  });
+  return button;
+}
+
 function bindCardToggle(card) {
   card.tabIndex = 0;
   card.setAttribute("role", "button");
@@ -215,8 +289,9 @@ function bindCardToggle(card) {
     card.setAttribute("aria-pressed", on ? "true" : "false");
   };
   const touchLike = (event) => event.pointerType === "touch" || window.matchMedia("(hover: none)").matches;
+  const onDownload = (event) => event.target.closest && event.target.closest(".download");
   card.addEventListener("pointerdown", (event) => {
-    if (event.button > 0 || !touchLike(event)) return;
+    if (onDownload(event) || event.button > 0 || !touchLike(event)) return;
     gesture = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
   });
   card.addEventListener("pointermove", (event) => {
@@ -224,6 +299,7 @@ function bindCardToggle(card) {
     if (Math.hypot(event.clientX - gesture.x, event.clientY - gesture.y) > 10) gesture.moved = true;
   });
   card.addEventListener("pointerup", (event) => {
+    if (onDownload(event)) return;
     if (!gesture || event.pointerId !== gesture.id) return;
     const moved = gesture.moved;
     gesture = null;
@@ -236,6 +312,7 @@ function bindCardToggle(card) {
     swallowClick = true;
   });
   card.addEventListener("click", (event) => {
+    if (onDownload(event)) return;
     if (swallowClick) {
       swallowClick = false;
       return;
@@ -244,6 +321,7 @@ function bindCardToggle(card) {
     toggle();
   });
   card.addEventListener("keydown", (event) => {
+    if (onDownload(event)) return;
     if (event.key !== "Enter" && event.key !== " ") return;
     event.preventDefault();
     toggle();
