@@ -1,0 +1,38 @@
+{
+  "presets": [
+    {
+      "id": "popcomic",
+      "label": "COMIC",
+      "keywords": "vintage color comic, expressive brush inking, halftone shading, printed paper",
+      "prompt": "Redraw the supplied photo as a single vintage color-comic illustration. Use expressive brush-ink contours with varied line weight, broad shadow shapes, and selective cross-hatching. Build midtones from visible halftone dots and use a limited palette of warm red, mustard yellow, and muted blue on cream paper. Keep the main subjects crisply inked, with simpler shapes in the background; let paper texture sit beneath the ink without obscuring small features. Preserve individual facial features, expressions, clothing, and object shapes through confident hand-drawn simplification. Keep the original subjects, object count, poses, camera angle, crop, and background arrangement. Fill the frame with the illustration without added panels, lettering, or decoration. Lighting finish only: {context}.",
+      "preview": "previews/comic.jpg"
+    },
+    {
+      "id": "watercolor",
+      "label": "WATERCOLOR",
+      "keywords": "transparent watercolor, wet-on-wet color, selective dry brush, reserved paper highlights",
+      "prompt": "Repaint the supplied photo as a loose, luminous watercolor on warm cotton paper. Build volume with transparent overlapping washes and let adjacent colors mingle naturally in wet areas. Use a few dry-brush accents and sharper edges around the main subjects, with softer lost edges in the existing background. Show gentle pigment granulation in pooled color and preserve clean paper for highlights; leave enough unpainted breathing room that the image feels brushed rather than airbrushed. Keep the source colors recognizable, with nuanced warm and cool mixtures in the shadows. Preserve individual features and expressions through economical brushwork, keeping the original subjects, object count, poses, camera angle, crop, and background arrangement. Lighting finish only: {context}.",
+      "preview": "previews/watercolor.jpg"
+    },
+    {
+      "id": "anime",
+      "label": "ANIME",
+      "keywords": "hand-drawn anime film still, precise linework, shaped cel shadows, painted backgrounds",
+      "prompt": "Redraw the supplied photo as a polished hand-drawn anime film still. Use precise, varied linework, confident two- or three-tone cel shading, and carefully placed highlights that describe each material. Preserve individual likeness and expressions while translating faces into expressive anime features with restrained proportions. Give hair and fabric clear grouped shapes and retain the distinguishing details of objects. Render the existing background with softer painted edges and quieter detail so the main subjects read clearly. Use rich but balanced local colors, clean separation of light and shadow, and readable dark areas. Keep the original subjects, object count, poses, camera angle, crop, and background arrangement; all stylization belongs to the existing scene. Lighting finish only: {context}.",
+      "preview": "previews/anime.jpg"
+    },
+    {
+      "id": "surprise",
+      "label": "SURPRISE",
+      "keywords": "randomized visual treatment, coherent palette, deliberate focal hierarchy",
+      "prompt": "Restyle the supplied photo with this already selected visual treatment: {variation}. Commit to that treatment across the entire image, expressing texture through its actual medium and using the selected palette as a coherent color relationship. Apply the focus choice through edge sharpness and detail distribution within the existing composition. For film treatments, retain photographic faces, materials, and optical depth; for handmade treatments, rebuild the same forms with the chosen marks or materials. Preserve individual likeness, expressions, and recognizable object shapes. Keep the original subjects, object count, poses, camera angle, crop, and background arrangement; fill the frame without added borders or decoration. The selected treatment and palette take priority over the lighting finish: {context}."
+    },
+    {
+      "id": "pencil",
+      "label": "PENCIL SKETCH",
+      "keywords": "full-color pencil drawing, directional strokes, layered color, visible paper tooth",
+      "prompt": "Redraw the supplied photo as an expressive full-color colored-pencil sketch on ivory drawing paper. Build forms with fine directional strokes that follow their surfaces, layered colored hatching, and changes in pencil pressure. Choose pencil colors from the source image and deepen shadows with complementary colored layers so they stay chromatic. Let paper tooth show between strokes, reserve bare paper for highlights, and use a few softly burnished passages for smooth surfaces. Concentrate precise marks around the main subjects and use broader, looser strokes in the existing background. Preserve individual likeness, expressions, and recognizable object shapes without tracing every edge equally. Keep the original subjects, object count, poses, camera angle, crop, and background arrangement. Lighting finish only: {context}.",
+      "preview": "previews/pencil.jpg"
+    }
+  ]
+}

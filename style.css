@@ -1,0 +1,46 @@
+*{box-sizing:border-box}body{margin:0;font-family:Inter,sans-serif;color:#3a1d3f;min-height:100vh;
+background:radial-gradient(circle at 85% 8%,#fff6c9 0,#ffe3b088 12%,transparent 30%),linear-gradient(180deg,#9fd8ff 0%,#cfe8ff 28%,#ffd6e8 62%,#ffe2cc 100%) fixed}
+.sky{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:-1}
+.cl{position:absolute;background:#fff;border-radius:999px;opacity:.85;filter:blur(1px);animation:drift 60s linear infinite}
+.cl::before,.cl::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cl::before{width:55%;height:180%;left:12%;bottom:20%}.cl::after{width:40%;height:140%;right:12%;bottom:30%}
+.c1{width:260px;height:70px;top:12%;left:-10%}.c2{width:340px;height:90px;top:42%;left:60%;animation-duration:85s}
+.c3{width:200px;height:56px;top:72%;left:20%;animation-duration:70s}.c4{width:180px;height:50px;top:25%;left:35%;animation-duration:95s;opacity:.6}
+@keyframes drift{to{transform:translateX(120vw)}}
+header{text-align:center;padding:44px 16px 12px}
+.logo{height:84px;width:auto;border-radius:22px;padding:6px;background:#fff;box-shadow:0 8px 30px #ff7fb455;image-rendering:auto}
+h1{font-family:Fraunces,serif;font-size:clamp(2.8rem,8vw,5rem);margin:10px 0 4px;background:linear-gradient(90deg,#ff3d8b,#ff7a59,#a24bff);-webkit-background-clip:text;color:transparent}
+.tag{color:#5b3a5f;margin:0 0 24px;font-size:1.05rem}.tag em{color:#e0287a;font-weight:600}
+#filters{display:grid;grid-template-columns:repeat(6,176px);justify-content:center;align-items:center;gap:8px;max-width:1120px;margin:0 auto}
+#filters button{display:grid;grid-template-columns:28px minmax(0,1fr);align-items:center;column-gap:8px;box-sizing:border-box;width:176px;height:48px;margin:0;padding:0 12px;background:#ffffffb8;border:2px solid #ff9ec6;color:#b0185f;border-radius:999px;cursor:pointer;font:600 .78rem Inter;white-space:nowrap;transition:background .2s,box-shadow .2s,border-color .2s}
+.filter-label{min-width:0;text-align:center}
+.filter-preview,.style-preview{transform:none;rotate:none}
+.filter-preview{display:block;width:28px;height:28px;border-radius:8px;object-fit:cover}
+.filter-preview.placeholder{background:linear-gradient(145deg,#fff6c9,#ff8fb8)}
+.filter-preview.all-mark{background:
+  linear-gradient(135deg,#9fd8ff,#7ec8f0) 0 0/50% 50% no-repeat,
+  linear-gradient(135deg,#ffd0e6,#ff8ad0) 100% 0/50% 50% no-repeat,
+  linear-gradient(135deg,#ffe9a8,#ffc56a) 0 100%/50% 50% no-repeat,
+  linear-gradient(135deg,#fff6ea,#f3d2b5) 100% 100%/50% 50% no-repeat}
+#filters button.on,#filters button:hover{background:linear-gradient(90deg,#ff4f9a,#ff8a5c);border-color:transparent;color:#fff;box-shadow:0 6px 18px #ff4f9a55}
+@media (max-width:1120px){
+  #filters{grid-template-columns:repeat(3,176px)}
+}
+@media (max-width:720px){
+  #filters{grid-template-columns:1fr 1fr;width:100%}
+  #filters button{width:100%;height:48px;font-size:.72rem;padding:0 10px}
+}
+main{columns:300px;column-gap:24px;padding:24px clamp(16px,4vw,56px);max-width:1400px;margin:auto}
+.card{break-inside:avoid;margin-bottom:24px;background:#ffffffc9;border:1px solid #fff;border-radius:22px;padding:12px;backdrop-filter:blur(10px);box-shadow:0 12px 36px #ff6fa833,0 2px 6px #0000000d;transition:transform .3s,box-shadow .3s;transform:none;rotate:none}
+.card:hover{transform:translateY(-6px);rotate:none;box-shadow:0 18px 44px #ff4f9a44}
+.pic{position:relative;border-radius:14px;overflow:hidden}.pic img{display:block;width:100%;transition:opacity .5s;transform:none;rotate:none}
+.pic .orig{position:absolute;inset:0;height:100%;object-fit:cover;opacity:0}.card:hover .orig,.card.flip .orig{opacity:1}
+.badge{position:absolute;top:10px;left:10px;padding:4px 11px;border-radius:999px;font:700 .72rem Inter;text-transform:uppercase;letter-spacing:.06em;background:#fff;color:#c2185b;box-shadow:0 2px 8px #0002}
+.badge.generic{text-transform:none;letter-spacing:0;color:#6b4a6e;background:#fff7fb}
+.empty{column-span:all;text-align:center;padding:56px 20px 72px;color:#7a3a62}
+.style-preview{display:block;width:min(280px,70vw);height:auto;margin:0 auto 16px;border-radius:16px;box-shadow:0 8px 24px #ff6fa844}
+.empty h2{font-family:Fraunces,serif;font-weight:600;font-size:clamp(1.8rem,4vw,2.4rem);margin:0 0 8px;color:#c2185b}
+.empty p{margin:0 auto;max-width:36rem;line-height:1.5}
+.cap{padding:10px 4px 2px;font-size:.88rem;line-height:1.5}.cap b{font-family:Fraunces,serif;font-size:1.1rem;color:#3a1d3f}.cap span{color:#6b4a6e}
+.desc{display:block;margin-top:6px;color:#8a4d72;font-size:.8rem}
+footer{text-align:center;color:#7a4a6e;padding:32px;font-size:.85rem}
