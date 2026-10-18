@@ -70,7 +70,7 @@ upload_shot(orig, dream, meta)
 
 ## Presets
 
-Filters, badges, keywords, prompts, and preview images come from `presets.json`, copied from the camera's `creative/creative.json` in mode order. A preview such as `previews/pencil.jpg` is copied beside it. A `style_id` that is not in that file still renders, with the id itself as a generic badge. When the camera adds a mode, refresh the file and redeploy:
+Filters, badges, keywords, prompts, and preview images come from `presets.json`, copied from the camera's `creative/creative.json`. The filter row keeps that order except `surprise` is always last: All, COMIC, WATERCOLOR, ANIME, PENCIL SKETCH, SURPRISE. Every filter tab, including All, uses the same width, height, and 28px rounded thumbnail slot. Surprise stays last and, like any mode with no preview image, uses a pastel question-mark tile in that slot. A preview such as `previews/pencil.jpg` is copied beside the file. A `style_id` that is not in that file still renders, with the id itself as a generic badge. When the camera adds a mode, refresh the file and redeploy:
 
 ```bash
 python3 scripts/sync_presets.py /path/to/Somnium/creative/creative.json
