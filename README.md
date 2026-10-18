@@ -50,7 +50,15 @@ python3 scripts/somnium_uploader.py watch /path/to/Somnium/server/outputs
 python3 scripts/somnium_uploader.py upload path/STEM_0_orig.jpg path/STEM_1_dream.jpg path/STEM.json
 ```
 
-The watcher records what it sent in `outputs/.somnium-uploaded.json` and retries anything that failed. Uploading the same stem again overwrites that shot.
+The watcher records what it sent in `outputs/.somnium-uploaded.json` and retries anything that failed. It leaves a shot alone while its newest file is under 1.5 seconds old, ignores the state file and `*.tmp`, and stops retrying a shot after three HTTP 413 responses. Uploading the same stem again overwrites that shot.
+
+Delete one uploaded shot (same URL and token):
+
+```bash
+python3 scripts/somnium_uploader.py delete STEM
+```
+
+On Windows, run the same commands with `py` instead of `python3`.
 
 To push at the end of a request instead of polling, call `upload_shot` from your own code (this is optional; the watcher does not need it):
 
