@@ -150,7 +150,7 @@ function render(filter) {
     const context = contextOf(photo);
     const card = document.createElement("article");
     card.className = "card";
-    card.addEventListener("click", () => card.classList.toggle("flip"));
+    bindCardToggle(card);
 
     const pic = document.createElement("div");
     pic.className = "pic";
@@ -165,7 +165,17 @@ function render(filter) {
     const badge = document.createElement("span");
     badge.className = badgeInfo.generic ? "badge generic" : "badge";
     badge.textContent = badgeInfo.label;
-    pic.append(dream, orig, badge);
+    const hint = document.createElement("span");
+    hint.className = "view-hint";
+    hint.setAttribute("aria-hidden", "true");
+    const dreamHint = document.createElement("span");
+    dreamHint.className = "when-dream";
+    dreamHint.textContent = "Dream";
+    const origHint = document.createElement("span");
+    origHint.className = "when-orig";
+    origHint.textContent = "Original";
+    hint.append(dreamHint, origHint);
+    pic.append(dream, orig, badge, hint);
 
     const cap = document.createElement("div");
     cap.className = "cap";
@@ -190,6 +200,54 @@ function render(filter) {
     card.append(pic, cap);
     board.append(card);
   }
+}
+
+function bindCardToggle(card) {
+  card.tabIndex = 0;
+  card.setAttribute("role", "button");
+  card.setAttribute("aria-pressed", "false");
+  card.setAttribute("aria-label", "Toggle between the dream and the original photo");
+  let gesture = null;
+  let swallowClick = false;
+  const toggle = () => {
+    const on = !card.classList.contains("show-orig");
+    card.classList.toggle("show-orig", on);
+    card.setAttribute("aria-pressed", on ? "true" : "false");
+  };
+  const touchLike = (event) => event.pointerType === "touch" || window.matchMedia("(hover: none)").matches;
+  card.addEventListener("pointerdown", (event) => {
+    if (event.button > 0 || !touchLike(event)) return;
+    gesture = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
+  });
+  card.addEventListener("pointermove", (event) => {
+    if (!gesture || event.pointerId !== gesture.id) return;
+    if (Math.hypot(event.clientX - gesture.x, event.clientY - gesture.y) > 10) gesture.moved = true;
+  });
+  card.addEventListener("pointerup", (event) => {
+    if (!gesture || event.pointerId !== gesture.id) return;
+    const moved = gesture.moved;
+    gesture = null;
+    swallowClick = true;
+    if (!moved) toggle();
+  });
+  card.addEventListener("pointercancel", (event) => {
+    if (!gesture || event.pointerId !== gesture.id) return;
+    gesture = null;
+    swallowClick = true;
+  });
+  card.addEventListener("click", (event) => {
+    if (swallowClick) {
+      swallowClick = false;
+      return;
+    }
+    if (event.detail === 0 || window.matchMedia("(hover: none)").matches) return;
+    toggle();
+  });
+  card.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    toggle();
+  });
 }
 
 document.getElementById("filters").addEventListener("click", (event) => {
