@@ -1,4 +1,6 @@
-# Somnium Dream Board
+# Somnium Picture Board
+
+Part of https://github.com/mm-nair/Somnium
 
 Static gallery (framework Other, no build, output directory `.`) plus two Node routes that store camera shots in Vercel Blob. The page loads `/api/photos`. Cards stay upright on the bright pink daytime background. With no shots yet, the board shows an empty state.
 
